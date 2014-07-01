@@ -8,6 +8,7 @@ from django import http
 from django.shortcuts import render, get_list_or_404
 
 import json
+from LETSBOOK.requesthandler import SchoolHandler
 
 # Description d'un livre
 _BOOK_USER           = "student"     # Identificateur de l'utilisateur possedant le livre
@@ -21,14 +22,6 @@ _BOOK_PRICE          = "price"       # Prix du livre
 _BOOK_ISBN           = "ISBN"        # Code a barre du livre
 _BOOK_INTENT         = "intent"      # Intention de transaction du vendeur du livre
 _BOOK_PICTURE        = "image"       # Image du livre
-
-# Description d'un etablissement scolaire
-_SCHOOL_NAME    = "name"
-_SCHOOL_STREET  = "street"
-_SCHOOL_CITY    = "city"
-_SCHOOL_ZIP     = "zipcode"
-_SCHOOL_TYPE    = "type"
-_SCHOOL_WEB     = "website"
 
 # Description d'un departement scolaire
 _DEPT_NAME          = "name"
@@ -46,41 +39,18 @@ _COURSE_DESC          = "desc"
 _ADD_OR_MODIFY_RECORD_SUCCESS   = 201
 _ADD_OR_MODIFY_RECORD_FAIL      = 202
 
+_REQUEST_PUT    = 'PUT'
+_REQUEST_GET    = 'GET'
+_REQUEST_DELETE = 'DELETE'
 
 # Create your views here.
-def addModifySchool(request):
+def school(request):
 
-    school = Establishment()
+    if request.method == _REQUEST_PUT:
+        return SchoolHandler.putSchool(request)
 
-    if _SCHOOL_NAME in request.GET:
-
-        try:
-            school = Establishment.objects.get(name=request.GET[_SCHOOL_NAME])
-
-        except ObjectDoesNotExist:
-            school = Establishment(name=request.GET[_SCHOOL_NAME])
-
-    else:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
-
-    if _SCHOOL_STREET in request.GET:
-        school.street   = request.GET[_SCHOOL_STREET]
-
-    if _SCHOOL_CITY in request.GET:
-        school.city     = request.GET[_SCHOOL_CITY]
-
-    if _SCHOOL_ZIP in request.GET:
-        school.zipCode  = request.GET[_SCHOOL_ZIP]
-
-    if _SCHOOL_TYPE in request.GET:
-        school.type     = request.GET[_SCHOOL_TYPE]
-
-    if _SCHOOL_WEB in request.GET:
-        school.webSite  = request.GET[_SCHOOL_WEB]
-
-    school.save()
-
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
+    if request.method == _REQUEST_GET:
+        return SchoolHandler.getSchool(request)
 
 def addModifyDepartment(request):
 
