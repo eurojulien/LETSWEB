@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -57,12 +57,30 @@ WSGI_APPLICATION\
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+# -- Requis par HEROKU --
+import dj_database_url
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        dj_database_url.config()
+
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host header
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = 'statictfiles'
+
+STATICFILES_DIRS = {
+    os.path.join(BASE_DIR, 'static')
+}
+# -- Requis par HEROKU --
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
