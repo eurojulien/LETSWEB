@@ -82,7 +82,6 @@ def getSchool(request):
         params['webSite_contains']  = str(request.GET[_SCHOOL_WEB])
 
     results   = Establishment.objects.filter(params)
-    #serializers.serialize('json', results)
 
     return HttpResponse("Banane", content_type='application/response')
 
