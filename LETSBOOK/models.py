@@ -63,6 +63,20 @@ class Book (models.Model):
                 'intent'        : str(self.intetn)
         })
 
+    # Format String
+    def getStr(self):
+
+        return {
+                'title'         : str(self.titre),
+                'author'        : str(self.author),
+                'edition'       : str(self.edition),
+                'description'   : str(self.description),
+                'ISBN'          : str(self.ISBN),
+                'howIsBook'     : str(self.howIsBook),
+                'price'         : float(self.price),
+                'intent'        : str(self.intetn)
+        }
+
     def getPicture(self):
 
         return base64.b64decode("")
@@ -151,7 +165,7 @@ class Establishment (models.Model):
 
     def getJson(self):
 
-        return json.dump({
+        return json.dumps({
             'name'          : str(self.name),
             'street'        : str(self.street),
             'city'          : str(self.city),
@@ -159,6 +173,17 @@ class Establishment (models.Model):
             'type'          : str(self.type),
             'webSite'       : str(self.webSite)
         })
+
+    def getStr(self):
+
+        return {
+            'name'          : str(self.name),
+            'street'        : str(self.street),
+            'city'          : str(self.city),
+            'zipCode'       : str(self.zipCode),
+            'type'          : str(self.type),
+            'webSite'       : str(self.webSite)
+        }
 
 class Account (models.Model):
 
