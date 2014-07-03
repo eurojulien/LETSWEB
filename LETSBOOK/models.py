@@ -5,8 +5,11 @@ import base64
 # Livre
 class Book (models.Model):
 
+    def __str__(self):
+        return self.title
+
     owner       = models.ForeignKey('Account')
-    sigle       = models.ForeignKey('Department')
+    sigle       = models.ForeignKey('Course')
 
     title       = models.CharField(verbose_name   = "Titre du livre",
                                    max_length     = 50,
@@ -83,6 +86,9 @@ class Book (models.Model):
 
 class Course (models.Model):
 
+    def __str__(self):
+        return self.sigle + "( " + self.name + " )"
+
     department  = models.ForeignKey('Department')
 
     name        = models.CharField(verbose_name   = "Nom du cours",
@@ -111,6 +117,9 @@ class Course (models.Model):
 
 class Department (models.Model):
 
+    def __str__(self):
+        return self.name
+
     etablishment= models.ForeignKey('Establishment')
 
     name        = models.CharField(verbose_name   = "Nom du Departement",
@@ -132,6 +141,9 @@ class Department (models.Model):
 
 # Etablissement scolaire
 class Establishment (models.Model):
+
+    def __str__(self):
+        return self.name + "( " + self.street + ") "
 
     name        = models.CharField(verbose_name   = "Nom de l'etablissement scolaire",
                                    max_length     = 100,
@@ -186,6 +198,9 @@ class Establishment (models.Model):
         }
 
 class Account (models.Model):
+
+    def __str__(self):
+        return self.lastName + ", " + self.firstName + "( " + self.phone + ") "
 
     department  = models.ForeignKey('Department')
 
