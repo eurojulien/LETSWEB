@@ -1,7 +1,7 @@
 from LETSBOOK.models import Establishment
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from django.core import serializers
+import json
 
 # Code de serveur
 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -64,24 +64,38 @@ def getSchool(request):
     params = {}
 
     if _SCHOOL_NAME in request.GET:
-        params['name_contains']     = str(request.GET[_SCHOOL_NAME])
+        params['name__icontains']     = str(request.GET[_SCHOOL_NAME])
 
     if _SCHOOL_STREET in request.GET:
-        params['street_contains']   = str(request.GET[_SCHOOL_STREET])
+        params['street__icontains']   = str(request.GET[_SCHOOL_STREET])
 
     if _SCHOOL_TYPE in request.GET:
-        params['type_contains']     = str(request.GET[_SCHOOL_TYPE])
+        params['type__icontains']     = str(request.GET[_SCHOOL_TYPE])
 
     if _SCHOOL_CITY in request.GET:
-        params['city_contains']     = str(request.GET[_SCHOOL_CITY])
+        params['city__icontains']     = str(request.GET[_SCHOOL_CITY])
 
     if _SCHOOL_ZIP in request.GET:
-        params['zipCode_contains']  = str(request.GET[_SCHOOL_ZIP])
+        params['zipCode__icontains']  = str(request.GET[_SCHOOL_ZIP])
 
     if _SCHOOL_WEB in request.GET:
-        params['webSite_contains']  = str(request.GET[_SCHOOL_WEB])
+        params['webSite__icontains']  = str(request.GET[_SCHOOL_WEB])
 
-    results   = Establishment.objects.filter(params)
+    response = {}
+    results = Establishment.objects.filter(**params)
 
-    return HttpResponse("Banane", content_type='application/response')
+    for index in range(0, results.count()):
+        response[index] = results[index].getStr()
 
+    return HttpResponse(json.dumps(response), content_type='application/response')
+
+def deleteSchool(request):
+
+    if _SCHOOL_ID in request.GET:
+        school = Establishment.objects.get(pk=request.GET[_SCHOOL_ID])
+        school.delete()
+
+    else:
+        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+
+    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
