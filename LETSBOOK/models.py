@@ -6,7 +6,7 @@ import base64
 class Book (models.Model):
 
     def __str__(self):
-        return self.title
+        return self.title + "( " + self.sigle.sigle + " )"
 
     owner       = models.ForeignKey('Account')
     sigle       = models.ForeignKey('Course')
@@ -56,28 +56,30 @@ class Book (models.Model):
     def getJSON(self):
 
         return json.dumps({
-                'title'         : str(self.titre),
+                'pk'            : str(self.pk),
+                'title'         : str(self.title),
                 'author'        : str(self.author),
                 'edition'       : str(self.edition),
                 'description'   : str(self.description),
                 'ISBN'          : str(self.ISBN),
                 'howIsBook'     : str(self.howIsBook),
                 'price'         : float(self.price),
-                'intent'        : str(self.intetn)
+                'intent'        : str(self.intent)
         })
 
     # Format String
     def getStr(self):
 
         return {
-                'title'         : str(self.titre),
+                'pk'            : str(self.pk),
+                'title'         : str(self.title),
                 'author'        : str(self.author),
                 'edition'       : str(self.edition),
                 'description'   : str(self.description),
                 'ISBN'          : str(self.ISBN),
                 'howIsBook'     : str(self.howIsBook),
                 'price'         : float(self.price),
-                'intent'        : str(self.intetn)
+                'intent'        : str(self.intent)
         }
 
     def getPicture(self):
@@ -110,6 +112,7 @@ class Course (models.Model):
     def getJson(self):
 
         return json.dumps({
+                'pk'            : str(self.pk),
                 "name"          : self.name,
                 "sigle"         : self.sigle,
                 "description"   : self.description
@@ -135,6 +138,7 @@ class Department (models.Model):
     def getJson(self):
 
         return json.dump({
+                'pk'            : str(self.pk),
                 'name'          : str(self.name),
                 'description'   : str(self.description)
             })
@@ -178,6 +182,7 @@ class Establishment (models.Model):
     def getJson(self):
 
         return json.dumps({
+            'pk'            : str(self.pk),
             'name'          : str(self.name),
             'street'        : str(self.street),
             'city'          : str(self.city),
@@ -189,6 +194,7 @@ class Establishment (models.Model):
     def getStr(self):
 
         return {
+            'pk'            : str(self.pk),
             'name'          : str(self.name),
             'street'        : str(self.street),
             'city'          : str(self.city),
@@ -247,6 +253,7 @@ class Account (models.Model):
     def getJson(self):
 
         return json.dump({
+            'pk'            : str(self.pk),
             'firstName'     : str(self.firstName),
             'lastName'      : str(self.lastName),
             'email'         : str(self.email),
