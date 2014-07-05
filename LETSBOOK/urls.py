@@ -4,10 +4,9 @@ from LETSBOOK import views
 
 urlpatterns = patterns('',
 
-    url('school',       views.school,      name='school'),
-    url('department',   views.addModifyDepartment,  name='addModifyDepartment'),
-    url('course',       views.addModifyCourse,      name='addModifyCourse'),
-    url(r'book',        views.addModififyBook,      name='addModifyBook'),
-    url(r'findBook',    views.findBook,             name='findBook'),
+    url(r'school',       views.school,      name='school'),
+    url(r'department',   views.addModifyDepartment,  name='addModifyDepartment'),
+    url(r'course',       views.addModifyCourse,      name='addModifyCourse'),
+    url(r'book',         views.book,        name='book'),
 
 )
