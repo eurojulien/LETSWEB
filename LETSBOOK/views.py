@@ -9,6 +9,7 @@ from django.shortcuts import render, get_list_or_404
 
 import json
 from LETSBOOK.requesthandler import SchoolHandler
+from LETSBOOK.requesthandler import BookHandler
 
 # Description d'un livre
 _BOOK_USER           = "student"     # Identificateur de l'utilisateur possedant le livre
@@ -87,77 +88,13 @@ def addModifyCourse(request):
 
     return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
 
-def addModififyBook(request):
+def book(request):
 
-    studentID       = ""
-    bookCourse      = ""
+    if request.method == _REQUEST_PUT:
+        return BookHandler.putBook(request)
 
-    # Si l'usager n'est pas specifie, alors le service retourne une erreur
-    if _BOOK_USER in request.GET:
-        studentID = Account.objetcs.get_object_or_404(id=studentID)
-    else:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+    if request.method == _REQUEST_GET:
+        return BookHandler.getBook(request)
 
-    # Si le sigle n'est pas specifie, alors le service retourne une erreur
-    if _BOOK_SIGLE in request.GET:
-        bookCourse = request.GET[_BOOK_SIGLE]
-    else:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
-
-    # Recherche ou creation du livre avec les donnees de base
-    book = Book.objects.get_or_create(owner=studentID, sigle=bookCourse)
-
-    if _BOOK_INTENT in request.GET:
-        book.intent = request.GET[_BOOK_INTENT]
-
-    if _BOOK_TITLE in request.GET:
-        book.title = request.GET[_BOOK_TITLE]
-
-    if _BOOK_AUTHOR in request.GET:
-        book.author = request.GET[_BOOK_AUTHOR]
-
-    if _BOOK_EDITION in request.GET:
-        book.edition = request.GET[_BOOK_EDITION]
-
-    if _BOOK_STATE in request.GET:
-        book.howIsBook = request.GET[_BOOK_STATE]
-
-    if _BOOK_PRICE in request.GET:
-        book.price = request.GET[_BOOK_PRICE]
-
-    if _BOOK_DESC in request.GET:
-        book.description = request.GET[_BOOK_DESC]
-
-    if _BOOK_ISBN in request.GET:
-        book.ISBN = request.GET[_BOOK_ISBN]
-
-    # Sauvegarde du livre
-    book.save()
-
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
-
-def findBook(request):
-
-    response = {}
-
-    if _BOOK_TITLE in request.GET:
-        response[_BOOK_TITLE] = str(request.GET[_BOOK_TITLE])
-
-    if _BOOK_AUTHOR in request.GET:
-        response[_BOOK_AUTHOR] = str(request.GET[_BOOK_AUTHOR])
-
-    if _BOOK_EDITION in request.GET:
-        response[_BOOK_EDITION] = str(request.GET[_BOOK_EDITION])
-
-    if _BOOK_SIGLE in request.GET:
-        response[_BOOK_SIGLE] = str(request.GET[_BOOK_SIGLE])
-
-    if _BOOK_STATE in request.GET:
-        response[_BOOK_STATE] = str(request.GET[_BOOK_STATE])
-
-    if _BOOK_DESC in request.GET:
-        response[_BOOK_DESC] = str(request.GET[_BOOK_DESC])
-
-    response = json.dumps(response)
-
-    return StreamingHttpResponse(response, content_type='application/response')
+    if request.method == _REQUEST_DELETE:
+        return BookHandler.deleteBook(request)
