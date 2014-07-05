@@ -94,8 +94,7 @@ def deleteSchool(request):
     if _SCHOOL_ID in request.GET:
         school = Establishment.objects.get(pk=request.GET[_SCHOOL_ID])
         school.delete()
+        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
 
-    else:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
 
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)

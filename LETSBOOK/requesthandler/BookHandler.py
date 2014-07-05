@@ -26,7 +26,7 @@ _BOOK_INTENT         = "intent"      # Intention de transaction du vendeur du li
 _BOOK_PICTURE        = "image"       # Image du livre
 _BOOK_KEYWORD        = "keyword"     # KEYWORD (Recherche rapide)
 
-# Ajout ou modification d'un etablissement scolaire
+# Ajout ou modification d'un livre
 def putBook(request):
 
     book = None
@@ -144,8 +144,6 @@ def deleteBook(request):
     if _BOOK_ID in request.GET:
         results = Book.objects.get(pk=str(request.GET[_BOOK_ID]))
         results.delete()
+        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
 
-    else:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
-
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
+    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
