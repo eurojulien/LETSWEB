@@ -252,7 +252,7 @@ class Account (models.Model):
 
     def getJson(self):
 
-        return json.dump({
+        return json.dumps({
             'pk'            : str(self.pk),
             'firstName'     : str(self.firstName),
             'lastName'      : str(self.lastName),
