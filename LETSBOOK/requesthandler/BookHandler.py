@@ -37,7 +37,7 @@ def putBook(request):
 
     # Ajout
     if book is None and _BOOK_TITLE in request.GET:
-        book = Book(title=_BOOK_TITLE)
+        book = Book(title=request.GET[_BOOK_TITLE])
     else:
         book.title          = request.GET[_BOOK_TITLE]
 
