@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: cp1252 -*-
+
 from django.db import models
 import json
 import base64
@@ -6,7 +9,7 @@ import base64
 class Book (models.Model):
 
     def __str__(self):
-        return self.title + "( " + self.sigle.sigle + " )"
+        return self.title.encode('utf8', 'replace') + "( " + self.sigle.sigle + " )"
 
     owner       = models.ForeignKey('Account')
     sigle       = models.ForeignKey('Course')
@@ -57,14 +60,14 @@ class Book (models.Model):
 
         return json.dumps({
                 'pk'            : str(self.pk),
-                'title'         : str(self.title),
-                'author'        : str(self.author),
-                'edition'       : str(self.edition),
-                'description'   : str(self.description),
+                'title'         : str(self.title.encode('utf8', 'replace')),
+                'author'        : str(self.author.encode('utf8', 'replace')),
+                'edition'       : str(self.edition.encode('utf8', 'replace')),
+                'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'howIsBook'     : str(self.howIsBook),
+                'howIsBook'     : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
-                'intent'        : str(self.intent)
+                'intent'        : str(self.intent.encode('utf8', 'replace'))
         })
 
     # Format String
@@ -72,14 +75,14 @@ class Book (models.Model):
 
         return {
                 'pk'            : str(self.pk),
-                'title'         : str(self.title),
-                'author'        : str(self.author),
-                'edition'       : str(self.edition),
-                'description'   : str(self.description),
+                'title'         : str(self.title.encode('utf8', 'replace')),
+                'author'        : str(self.author.encode('utf8', 'replace')),
+                'edition'       : str(self.edition.encode('utf8', 'replace')),
+                'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'howIsBook'     : str(self.howIsBook),
+                'howIsBook'     : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
-                'intent'        : str(self.intent)
+                'intent'        : str(self.intent.encode('utf8', 'replace'))
         }
 
     def getPicture(self):
@@ -89,7 +92,7 @@ class Book (models.Model):
 class Course (models.Model):
 
     def __str__(self):
-        return self.sigle + "( " + self.name + " )"
+        return self.sigle + "( " + self.name.encode('utf8', 'replace') + " )"
 
     department  = models.ForeignKey('Department')
 
@@ -113,9 +116,9 @@ class Course (models.Model):
 
         return json.dumps({
                 'pk'            : str(self.pk),
-                "name"          : self.name,
-                "sigle"         : self.sigle,
-                "description"   : self.description
+                "name"          : str(self.name.encode('utf8', 'replace')),
+                "sigle"         : str(self.sigle),
+                "description"   : str(self.description.encode('utf8', 'replace'))
             })
 
 class Department (models.Model):
@@ -139,8 +142,8 @@ class Department (models.Model):
 
         return json.dump({
                 'pk'            : str(self.pk),
-                'name'          : str(self.name),
-                'description'   : str(self.description)
+                'name'          : str(self.name.encode('utf8', 'replace')),
+                'description'   : str(self.description.encode('utf8', 'replace'))
             })
 
 # Etablissement scolaire
@@ -183,11 +186,11 @@ class Establishment (models.Model):
 
         return json.dumps({
             'pk'            : str(self.pk),
-            'name'          : str(self.name),
-            'street'        : str(self.street),
-            'city'          : str(self.city),
+            'name'          : str(self.name.encode('utf8', 'replace')),
+            'street'        : str(self.street.encode('utf8', 'replace')),
+            'city'          : str(self.city.encode('utf8', 'replace')),
             'zipCode'       : str(self.zipCode),
-            'type'          : str(self.type),
+            'type'          : str(self.type.encode('utf8', 'replace')),
             'webSite'       : str(self.webSite)
         })
 
@@ -195,18 +198,18 @@ class Establishment (models.Model):
 
         return {
             'pk'            : str(self.pk),
-            'name'          : str(self.name),
-            'street'        : str(self.street),
-            'city'          : str(self.city),
+            'name'          : str(self.name.encode('utf8', 'replace')),
+            'street'        : str(self.street.encode('utf8', 'replace')),
+            'city'          : str(self.city.encode('utf8', 'replace')),
             'zipCode'       : str(self.zipCode),
-            'type'          : str(self.type),
+            'type'          : str(self.type.encode('utf8', 'replace')),
             'webSite'       : str(self.webSite)
         }
 
 class Account (models.Model):
 
     def __str__(self):
-        return self.lastName + ", " + self.firstName + "( " + self.phone + ") "
+        return self.lastName.encode('utf8', 'replace') + ", " + self.firstName.encode('utf8', 'replace') + "( " + self.email + ") "
 
     department  = models.ForeignKey('Department')
 
@@ -254,11 +257,11 @@ class Account (models.Model):
 
         return json.dumps({
             'pk'            : str(self.pk),
-            'firstName'     : str(self.firstName),
-            'lastName'      : str(self.lastName),
+            'firstName'     : str(self.firstName.encode('utf8', 'replace')),
+            'lastName'      : str(self.lastName.encode('utf8', 'replace')),
             'email'         : str(self.email),
             'phone'         : str(self.phone),
-            'password'      : str(self.password),
-            'faceBookID'    : str(self.faceBookID),
-            'googlePlusID'  : str(self.googlePlusID)
+            'password'      : str(self.password.encode('utf8', 'replace')),
+            'faceBookID'    : str(self.faceBookID.encode('utf8', 'replace')),
+            'googlePlusID'  : str(self.googlePlusID.encode('utf8', 'replace'))
         })
