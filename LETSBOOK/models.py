@@ -11,6 +11,13 @@ class Book (models.Model):
     def __str__(self):
         return self.title.encode('utf8', 'replace') + "( " + self.sigle.sigle + " )"
 
+    INTENT_OPTIONS = (
+        ('V', 'vente'),
+        ('L', 'location'),
+        ('P', 'Pret'),
+        ('D', 'Don'),
+    )
+
     owner       = models.ForeignKey('Account')
     sigle       = models.ForeignKey('Course')
 
@@ -35,18 +42,16 @@ class Book (models.Model):
                                    primary_key    = False)
 
     intent      = models.CharField(verbose_name   = "Intention du vendeur",
-                                   max_length     = 100,
-                                   null           = False,
+                                   max_length     = 1,
+                                   choices        = INTENT_OPTIONS,
                                    primary_key    = False)
 
     description = models.CharField(verbose_name   = "Description du livre",
                                    max_length     = 100,
-                                   null           = True,
                                    primary_key    = False)
 
     ISBN        = models.CharField(verbose_name   = "ISBN (Code a barre) du livre",
                                    max_length     = 30,
-                                   null           = True,
                                    primary_key    = False)
 
 
