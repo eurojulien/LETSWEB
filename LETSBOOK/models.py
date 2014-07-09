@@ -11,15 +11,13 @@ class Book (models.Model):
     def __str__(self):
         return self.title.encode('utf8', 'replace') + "( " + self.sigle.sigle + " )"
 
-    INTENT_OPTIONS = (
-        ('V', 'vente'),
-        ('L', 'location'),
-        ('P', 'Pret'),
-        ('D', 'Don'),
-    )
+    owner       = models.ForeignKey('Account',
+                                    verbose_name  = 'Proprietaire du livre',
+                                    )
 
-    owner       = models.ForeignKey('Account')
-    sigle       = models.ForeignKey('Course')
+    sigle       = models.ForeignKey('Course',
+                                    verbose_name = 'Requis pour ce cours',
+                                    )
 
     title       = models.CharField(verbose_name   = "Titre du livre",
                                    max_length     = 50,
@@ -42,16 +40,17 @@ class Book (models.Model):
                                    primary_key    = False)
 
     intent      = models.CharField(verbose_name   = "Intention du vendeur",
-                                   max_length     = 1,
-                                   choices        = INTENT_OPTIONS,
+                                   max_length     = 30,
                                    primary_key    = False)
 
     description = models.CharField(verbose_name   = "Description du livre",
                                    max_length     = 100,
+                                   blank          = True,
                                    primary_key    = False)
 
     ISBN        = models.CharField(verbose_name   = "ISBN (Code a barre) du livre",
                                    max_length     = 30,
+                                   blank          = True,
                                    primary_key    = False)
 
 
@@ -61,13 +60,13 @@ class Book (models.Model):
     def getJson(self):
 
         return json.dumps({
-                'pk'            : str(self.pk),
+                'id'            : str(self.pk),
                 'title'         : str(self.title.encode('utf8', 'replace')),
                 'author'        : str(self.author.encode('utf8', 'replace')),
                 'edition'       : str(self.edition.encode('utf8', 'replace')),
                 'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'state'     : str(self.howIsBook.encode('utf8', 'replace')),
+                'state'         : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
                 'intent'        : str(self.intent.encode('utf8', 'replace'))
         })
@@ -76,13 +75,13 @@ class Book (models.Model):
     def getStr(self):
 
         return {
-                'pk'            : str(self.pk),
+                'id'            : str(self.pk),
                 'title'         : str(self.title.encode('utf8', 'replace')),
                 'author'        : str(self.author.encode('utf8', 'replace')),
                 'edition'       : str(self.edition.encode('utf8', 'replace')),
                 'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'state'     : str(self.howIsBook.encode('utf8', 'replace')),
+                'state'         : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
                 'intent'        : str(self.intent.encode('utf8', 'replace'))
         }
