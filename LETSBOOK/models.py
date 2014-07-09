@@ -16,16 +16,26 @@ class Book (models.Model):
 
     title       = models.CharField(verbose_name   = "Titre du livre",
                                    max_length     = 50,
-                                   null           = False,
                                    primary_key    = False)
 
     author      = models.CharField(verbose_name   = "Auteur du livre",
                                    max_length     = 50,
-                                   null           = False,
                                    primary_key    = False)
 
     edition     = models.CharField(verbose_name   = "Edition du livre",
                                    max_length     = 50,
+                                   primary_key    = False)
+
+    price       = models.FloatField(verbose_name    = "Prix du livre",
+                                    default         = 0.00,
+                                    primary_key     = False)
+
+    howIsBook   = models.CharField(verbose_name   = "Etat du livre",
+                                   max_length     = 100,
+                                   primary_key    = False)
+
+    intent      = models.CharField(verbose_name   = "Intention du vendeur",
+                                   max_length     = 100,
                                    null           = False,
                                    primary_key    = False)
 
@@ -39,24 +49,11 @@ class Book (models.Model):
                                    null           = True,
                                    primary_key    = False)
 
-    price       = models.FloatField(verbose_name    = "Prix du livre",
-                                    default         = 0.00,
-                                    null            = False,
-                                    primary_key     = False)
 
-    howIsBook   = models.CharField(verbose_name   = "Etat du livre",
-                                   max_length     = 100,
-                                   null           = False,
-                                   primary_key    = False)
-
-    intent      = models.CharField(verbose_name   = "Intention du vendeur",
-                                   max_length     = 100,
-                                   null           = False,
-                                   primary_key    = False)
     # picture
 
     # Format JSON
-    def getJSON(self):
+    def getJson(self):
 
         return json.dumps({
                 'pk'            : str(self.pk),
@@ -65,7 +62,7 @@ class Book (models.Model):
                 'edition'       : str(self.edition.encode('utf8', 'replace')),
                 'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'howIsBook'     : str(self.howIsBook.encode('utf8', 'replace')),
+                'state'     : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
                 'intent'        : str(self.intent.encode('utf8', 'replace'))
         })
@@ -80,7 +77,7 @@ class Book (models.Model):
                 'edition'       : str(self.edition.encode('utf8', 'replace')),
                 'description'   : str(self.description.encode('utf8', 'replace')),
                 'ISBN'          : str(self.ISBN),
-                'howIsBook'     : str(self.howIsBook.encode('utf8', 'replace')),
+                'state'     : str(self.howIsBook.encode('utf8', 'replace')),
                 'price'         : float(self.price),
                 'intent'        : str(self.intent.encode('utf8', 'replace'))
         }
