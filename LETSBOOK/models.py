@@ -46,11 +46,13 @@ class Book (models.Model):
     description = models.CharField(verbose_name   = "Description du livre",
                                    max_length     = 100,
                                    blank          = True,
+                                   default        = "",
                                    primary_key    = False)
 
     ISBN        = models.CharField(verbose_name   = "ISBN (Code a barre) du livre",
                                    max_length     = 30,
                                    blank          = True,
+                                   default        = "",
                                    primary_key    = False)
 
 
@@ -60,30 +62,30 @@ class Book (models.Model):
     def getJson(self):
 
         return json.dumps({
-                'id'            : str(self.pk),
-                'title'         : str(self.title.encode('utf8', 'replace')),
-                'author'        : str(self.author.encode('utf8', 'replace')),
-                'edition'       : str(self.edition.encode('utf8', 'replace')),
-                'description'   : str(self.description.encode('utf8', 'replace')),
-                'ISBN'          : str(self.ISBN),
-                'state'         : str(self.howIsBook.encode('utf8', 'replace')),
-                'price'         : float(self.price),
-                'intent'        : str(self.intent.encode('utf8', 'replace'))
+                "idvalue"       : self.pk,
+                "title"         : str(self.title.encode('utf8', 'replace')),
+                "author"        : str(self.author.encode('utf8', 'replace')),
+                "edition"       : str(self.edition.encode('utf8', 'replace')),
+                "description"   : str(self.description.encode('utf8', 'replace')),
+                "ISBN"          : str(self.ISBN),
+                "state"         : str(self.howIsBook.encode('utf8', 'replace')),
+                "price"         : self.price,
+                "intent"        : str(self.intent.encode('utf8', 'replace'))
         })
 
     # Format String
     def getStr(self):
 
         return {
-                'id'            : str(self.pk),
-                'title'         : str(self.title.encode('utf8', 'replace')),
-                'author'        : str(self.author.encode('utf8', 'replace')),
-                'edition'       : str(self.edition.encode('utf8', 'replace')),
-                'description'   : str(self.description.encode('utf8', 'replace')),
-                'ISBN'          : str(self.ISBN),
-                'state'         : str(self.howIsBook.encode('utf8', 'replace')),
-                'price'         : float(self.price),
-                'intent'        : str(self.intent.encode('utf8', 'replace'))
+                "idvalue"       : self.pk,
+                "title"         : str(self.title.encode('utf8', 'replace')),
+                "author"        : str(self.author.encode('utf8', 'replace')),
+                "edition"       : str(self.edition.encode('utf8', 'replace')),
+                "description"   : str(self.description.encode('utf8', 'replace')),
+                "ISBN"          : str(self.ISBN),
+                "state"         : str(self.howIsBook.encode('utf8', 'replace')),
+                "price"         : self.price,
+                "intent"        : str(self.intent.encode('utf8', 'replace'))
         }
 
     def getPicture(self):
@@ -116,7 +118,7 @@ class Course (models.Model):
     def getJson(self):
 
         return json.dumps({
-                'pk'            : str(self.pk),
+                "idvalue"       : self.pk,
                 "name"          : str(self.name.encode('utf8', 'replace')),
                 "sigle"         : str(self.sigle),
                 "description"   : str(self.description.encode('utf8', 'replace'))
@@ -142,9 +144,9 @@ class Department (models.Model):
     def getJson(self):
 
         return json.dump({
-                'pk'            : str(self.pk),
-                'name'          : str(self.name.encode('utf8', 'replace')),
-                'description'   : str(self.description.encode('utf8', 'replace'))
+                "idvalue"       : self.pk,
+                "name"          : str(self.name.encode('utf8', 'replace')),
+                "description"   : str(self.description.encode('utf8', 'replace'))
             })
 
 # Etablissement scolaire
@@ -186,25 +188,25 @@ class Establishment (models.Model):
     def getJson(self):
 
         return json.dumps({
-            'pk'            : str(self.pk),
-            'name'          : str(self.name.encode('utf8', 'replace')),
-            'street'        : str(self.street.encode('utf8', 'replace')),
-            'city'          : str(self.city.encode('utf8', 'replace')),
-            'zipCode'       : str(self.zipCode),
-            'type'          : str(self.type.encode('utf8', 'replace')),
-            'webSite'       : str(self.webSite)
+            "idvalue"       : self.pk,
+            "name"          : str(self.name.encode('utf8', 'replace')),
+            "street"        : str(self.street.encode('utf8', 'replace')),
+            "city"          : str(self.city.encode('utf8', 'replace')),
+            "zipCode"       : str(self.zipCode),
+            "type"          : str(self.type.encode('utf8', 'replace')),
+            "webSite"       : str(self.webSite)
         })
 
     def getStr(self):
 
         return {
-            'pk'            : str(self.pk),
-            'name'          : str(self.name.encode('utf8', 'replace')),
-            'street'        : str(self.street.encode('utf8', 'replace')),
-            'city'          : str(self.city.encode('utf8', 'replace')),
-            'zipCode'       : str(self.zipCode),
-            'type'          : str(self.type.encode('utf8', 'replace')),
-            'webSite'       : str(self.webSite)
+            "idvalue"       : self.pk,
+            "name"          : str(self.name.encode('utf8', 'replace')),
+            "street"        : str(self.street.encode('utf8', 'replace')),
+            "city"          : str(self.city.encode('utf8', 'replace')),
+            "zipCode"       : str(self.zipCode),
+            "type"          : str(self.type.encode('utf8', 'replace')),
+            "webSite"       : str(self.webSite)
         }
 
 class Account (models.Model):
@@ -212,57 +214,59 @@ class Account (models.Model):
     def __str__(self):
         return self.lastName.encode('utf8', 'replace') + ", " + self.firstName.encode('utf8', 'replace') + "( " + self.email + ") "
 
-    department  = models.ForeignKey('Department')
+    department  = models.ForeignKey('Department',
+                                    verbose_name  = 'Departement Scolaire',
+                                    blank         = True,
+                                    null          = True,
+                                    )
 
     firstName   = models.CharField(verbose_name   = "Prenom de l'utilisateur",
                                    max_length     = 100,
-                                   null           = False,
                                    primary_key    = False)
 
     lastName    = models.CharField(verbose_name   = "Nom de l'utilisateur",
                                    max_length     = 100,
-                                   null           = False,
                                    primary_key    = False)
 
     email       = models.CharField(verbose_name   = "Email de l'utilisateur",
                                    max_length     = 100,
                                    null           = False,
-                                   primary_key    = False,
                                    unique         = True)
 
     phone       = models.CharField(verbose_name   = "Telephone de l'utilisateur",
                                    max_length     = 100,
-                                   null           = True,
-                                   primary_key    = False,
-                                   unique         = True)
+                                   blank          = True,
+                                   primary_key    = False)
 
     password    = models.CharField(verbose_name   = "Mot de passe du compte",
                                    max_length     = 100,
                                    null           = True,
-                                   primary_key    = False,
-                                   unique         = True)
+                                   blank          = True,
+                                   primary_key    = False)
 
     faceBookID  = models.CharField(verbose_name   = "Identification FaceBook",
                                    max_length     = 100,
                                    null           = True,
+                                   blank          = True,
                                    primary_key    = False,
                                    unique         = True)
 
     googlePlusID = models.CharField(verbose_name   = "Identification Google Plus",
                                     max_length     = 100,
                                     null           = True,
+                                    blank          = True,
                                     primary_key    = False,
                                     unique         = True)
 
     def getJson(self):
 
         return json.dumps({
-            'pk'            : str(self.pk),
-            'firstName'     : str(self.firstName.encode('utf8', 'replace')),
-            'lastName'      : str(self.lastName.encode('utf8', 'replace')),
-            'email'         : str(self.email),
-            'phone'         : str(self.phone),
-            'password'      : str(self.password.encode('utf8', 'replace')),
-            'faceBookID'    : str(self.faceBookID.encode('utf8', 'replace')),
-            'googlePlusID'  : str(self.googlePlusID.encode('utf8', 'replace'))
+            "idvalue"       : self.pk,
+            "firstName"     : str(self.firstName.encode('utf8', 'replace')),
+            "lastName"      : str(self.lastName.encode('utf8', 'replace')),
+            "email"         : str(self.email),
+            "phone"         : str(self.phone),
+            "password"      : str(self.password),
+            "faceBookID"    : str(self.faceBookID),
+            "googlePlusID"  : str(self.googlePlusID)
         })
