@@ -8,16 +8,18 @@ import json
 
 # Code de serveur
 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-_ADD_OR_MODIFY_RECORD_SUCCESS   = 201
-_ADD_OR_MODIFY_RECORD_FAIL      = 202
+_HTTP_SUCCESS                   = 200
+_HTTP_ERROR                     = 500
+_HTTP_JSON                      = "application/json"
+_BOOK_JSON                      = "books"
 
 # Description d'un livre
 _BOOK_ID             = "id"          # Identificateur de livre
-_BOOK_USER           = "owner"       # Identificateur de l'utilisateur possedant le livre
+_BOOK_USER           = "idowner"     # Identificateur de l'utilisateur possedant le livre
 _BOOK_TITLE          = "title"       # Titre du livre
 _BOOK_AUTHOR         = "author"      # Auteur du livre
 _BOOK_EDITION        = "edition"     # Edition du livre
-_BOOK_SIGLE          = "sigle"       # Sigle du cours dans lequel le livre est demande
+_BOOK_SIGLE          = "idsigle"     # Sigle du cours dans lequel le livre est demande
 _BOOK_STATE          = "state"       # Etat du livre
 _BOOK_DESC           = "desc"        # Description du livre
 _BOOK_PRICE          = "price"       # Prix du livre
@@ -33,17 +35,20 @@ def putBook(request):
 
     # Modification
     if _BOOK_ID in request.GET:
-        book = Book.objects.get(pk=request.GET[_BOOK_ID])
 
+        try:
+            book = Book.objects.get(pk=request.GET[_BOOK_ID])
+        except Book.DoesNotExist:
+            return HttpResponse(content="Le livre " + request.GET[_BOOK_ID] + " n'existe pas", status=_HTTP_ERROR)
     # Ajout
     if book is None and _BOOK_TITLE in request.GET:
         book = Book(title=request.GET[_BOOK_TITLE])
-    else:
+    elif _BOOK_TITLE in request.GET:
         book.title          = request.GET[_BOOK_TITLE]
 
     # Pas de moyen de construction
     if _BOOK_ID not in request.GET and _BOOK_TITLE not in request.GET:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+        return HttpResponse(content= "Titre manquant", status=_HTTP_ERROR)
 
     if _BOOK_AUTHOR in request.GET:
         book.author         = request.GET[_BOOK_AUTHOR]
@@ -72,32 +77,41 @@ def putBook(request):
     if _BOOK_DESC in request.GET:
         book.description    = request.GET[_BOOK_DESC]
 
-    book.save()
+    try:
+        book.save()
+    except Exception as e:
+        return HttpResponse(content=e.message, status=_HTTP_ERROR)
 
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
+    return HttpResponse(status=_HTTP_SUCCESS)
 
 # Recherche d'un livre
 def getBook(request):
 
-    params  = Q()
-
     # Recherche avec clef primaire
     if _BOOK_ID in request.GET:
-        results = Book.objects.get(pk=request.GET[_BOOK_ID])
-        return HttpResponse(results.getJson(), content_type='application/response')
+
+        try:
+            results = Book.objects.get(pk=request.GET[_BOOK_ID])
+        except Book.DoesNotExist:
+            return HttpResponse(content="Le livre " + request.GET[_BOOK_ID] + " n'existe pas", status=_HTTP_ERROR)
+
+        return HttpResponse(results.getJson(), content_type=_HTTP_JSON)
+
+    # Parametres de recherche
+    params  = Q()
 
     # Recherche avec keyword (Recherche rapide)
     if _BOOK_KEYWORD in request.GET:
         params = params | Q(title__icontains        =   str(request.GET[_BOOK_KEYWORD]))
         params = params | Q(description__icontains  =   str(request.GET[_BOOK_KEYWORD]))
 
-        response = {}
-        results  = Book.objects.filter(params)
+        response = {"books" : []}
+        results = Book.objects.filter(params)
 
         for index in range(0, results.count()):
-            response[index] = results[index].getStr()
+            response[_BOOK_JSON].append(results[index].getStr())
 
-        return HttpResponse(json.dumps(response), content_type='application/response')
+        return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
 
     # Recherche avec critere precis
     if _BOOK_TITLE in request.GET:
@@ -130,20 +144,26 @@ def getBook(request):
     if _BOOK_SIGLE in request.GET:
         params = params & Q(sigle                   = Course.objects.get(pk=str(request.GET[_BOOK_SIGLE])))
 
-    response = {}
+    response = {'books' : []}
     results = Book.objects.filter(params)
 
     for index in range(0, results.count()):
-        response[index] = results[index].getStr()
+        response["books"].append(results[index].getStr())
 
-    return HttpResponse(json.dumps(response), content_type='application/response')
+    return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
 
 # Suppression d'un livre
 def deleteBook(request):
 
     if _BOOK_ID in request.GET:
-        results = Book.objects.get(pk=str(request.GET[_BOOK_ID]))
-        results.delete()
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
 
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+        try:
+            results = Book.objects.get(pk=str(request.GET[_BOOK_ID]))
+        except Book.DoesNotExist :
+            return HttpResponse(content="Le livre " + request.GET[_BOOK_ID] + " n'existe pas", content_type=_HTTP_ERROR)
+
+        results.delete()
+
+        return HttpResponse(status=_HTTP_SUCCESS)
+
+    return HttpResponse(status=_HTTP_ERROR)

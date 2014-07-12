@@ -8,12 +8,13 @@ import json
 
 # Code de serveur
 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-_ADD_OR_MODIFY_RECORD_SUCCESS   = 201
-_ADD_OR_MODIFY_RECORD_FAIL      = 202
+_HTTP_SUCCESS                   = 200
+_HTTP_ERROR                     = 500
+_HTTP_JSON                      = "application/json"
 
 # Description d'un livre
 _USER_ID             = "id"         # Clef primaire usager
-_USER_DEPT           = "dept"       # Clef primaire Departement
+_USER_DEPT           = "iddept"     # Clef primaire Departement
 _USER_FNAME          = "fname"      # Prenom usager
 _USER_LNAME          = "lname"      # Nom usager
 _USER_EMAIL          = "email"      # email usager
@@ -21,7 +22,7 @@ _USER_PHONE          = "phone"      # Telephone usager
 _USER_PWD            = "password"   # Mot de passe usager
 _USER_FACEBOOK       = "facebook"   # Compte faceBook usager
 _USER_GOOGLEPLUS     = "googleplus" # Compte Google Usager
-_USER_BOOK           = "book"       # Clef primaire d'un livre
+_USER_BOOK           = "idbook"     # Clef primaire d'un livre
 
 # Ajout ou modification d'un compte etudiant
 def putUser(request):
@@ -34,19 +35,26 @@ def putUser(request):
 
     # Ajout
     if user is None and _USER_FNAME in request.GET:
-        user = Account(title=_USER_FNAME)
+        user = Account(firstName=request.GET[_USER_FNAME])
     else:
         user.firstName          = request.GET[_USER_FNAME]
 
     # Pas de moyen de construction
     if _USER_FNAME not in request.GET and _USER_ID not in request.GET:
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+        return HttpResponse(status=_HTTP_ERROR)
 
     if _USER_LNAME in request.GET:
         user.lastName           = request.GET[_USER_LNAME]
 
     if _USER_DEPT in request.GET:
-        user.department         = Department.objects.get(pk=request.GET[_USER_DEPT])
+
+        try:
+            user.department         = Department.objects.get(pk=request.GET[_USER_DEPT])
+        except Department.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content="Departement " + request.GET[_USER_DEPT] + "n'existe pas")
+
+    if _USER_EMAIL in request.GET:
+        user.email              = request.GET[_USER_EMAIL]
 
     if _USER_PHONE in request.GET:
         user.phone              = request.GET[_USER_PHONE]
@@ -60,50 +68,76 @@ def putUser(request):
     if _USER_GOOGLEPLUS in request.GET:
         user.googlePlusID       = request.GET[_USER_GOOGLEPLUS]
 
-    user.save()
+    if user.password is None and user.faceBookID is None and user.googlePlusID is None:
+        return HttpResponse(status=_HTTP_ERROR, content="Un mot de passe est requis")
 
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
+    try:
+        user.save()
+    except Exception as e:
+        return HttpResponse(status=_HTTP_ERROR, content=e.message)
+
+    return HttpResponse(status=_HTTP_SUCCESS)
 
 # Recherche d'un compte usager
 def getUser(request):
 
     # Recherche avec clef primaire
     if _USER_ID in request.GET:
-        results = Account.objects.get(pk=request.GET[_USER_ID])
-        return HttpResponse(results.getJson(), content_type='application/response')
+        try:
+            results = Account.objects.get(pk=request.GET[_USER_ID])
+        except Account.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content= "Le compte " + request.GET[_USER_ID ] + " est inconnu")
+
+        return HttpResponse(status=_HTTP_SUCCESS, content=results.getJson(), content_type=_HTTP_JSON)
 
     params  = Q()
 
     # Proprietaire d'un livre
     if _USER_BOOK in request.GET:
-        result = Book.objects.get(pk=request.GET[_USER_BOOK]).owner
-        return HttpResponse(result.getJson(), content_type='application/response')
+        try:
+            result = Book.objects.get(pk=request.GET[_USER_BOOK])
+        except Book.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content= "Le livre " + request.GET[_USER_BOOK ] + " est inconnu")
+
+        return HttpResponse(status=_HTTP_SUCCESS, content=result.owner.getJson(), content_type=_HTTP_JSON)
 
     # Identification compte LETSBOOK
     if _USER_EMAIL in request.GET and _USER_PWD in request.GET:
         params = params & Q(email       = str(request.GET[_USER_EMAIL]))
         params = params & Q(password    = str(request.GET[_USER_PWD]))
 
-        result = Account.objects.get(params)
-        return HttpResponse(result.getJson())
+        try:
+            result = Account.objects.get(params)
+        except Account.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
+
+        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
 
     # Identification Facebook
     if _USER_EMAIL in request.GET and _USER_FACEBOOK in request.GET:
         params = params & Q(email       = str(request.GET[_USER_EMAIL]))
         params = params & Q(faceBookID  = str(request.GET[_USER_FACEBOOK]))
 
-        result = Account.objects.get(params)
-        return HttpResponse(result.getJson())
+        try:
+            result = Account.objects.get(params)
+        except Account.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
+
+        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
 
     # Identification Google
     if _USER_EMAIL in request.GET and _USER_GOOGLEPLUS in request.GET:
         params = params & Q(email        = str(request.GET[_USER_EMAIL]))
         params = params & Q(googlePlusID = str(request.GET[_USER_GOOGLEPLUS]))
 
-        result = Account.objects.get(params)
-        return HttpResponse(result.getJson())
+        try:
+            result = Account.objects.get(params)
+        except Account.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
 
-    return HttpResponse(status=500, content="Recherche par ce(s) parametre(s) impossible")
+        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
+
+    return HttpResponse(status=_HTTP_ERROR, content="Identification/Recherche par ce(s) parametre(s) impossible")
 
 # Suppression d'un compte usager
 def deleteUser(request):
@@ -111,7 +145,7 @@ def deleteUser(request):
     if _USER_ID in request.GET:
         result = Account.objects.get(pk=str(request.GET[_USER_ID]))
         result.delete()
-        return HttpResponse(status=_ADD_OR_MODIFY_RECORD_SUCCESS)
+        return HttpResponse(status=_HTTP_SUCCESS)
 
-    return HttpResponse(status=_ADD_OR_MODIFY_RECORD_FAIL)
+    return HttpResponse(status=_HTTP_ERROR)
 
