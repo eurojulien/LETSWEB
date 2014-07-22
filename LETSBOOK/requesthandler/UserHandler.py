@@ -81,15 +81,6 @@ def putUser(request):
 # Recherche d'un compte usager
 def getUser(request):
 
-    # Recherche avec clef primaire
-    if _USER_ID in request.GET:
-        try:
-            results = Account.objects.get(pk=request.GET[_USER_ID])
-        except Account.DoesNotExist:
-            return HttpResponse(status=_HTTP_ERROR, content= "Le compte " + request.GET[_USER_ID ] + " est inconnu")
-
-        return HttpResponse(status=_HTTP_SUCCESS, content=results.getJson(), content_type=_HTTP_JSON)
-
     params  = Q()
 
     # Proprietaire d'un livre
@@ -99,7 +90,7 @@ def getUser(request):
         except Book.DoesNotExist:
             return HttpResponse(status=_HTTP_ERROR, content= "Le livre " + request.GET[_USER_BOOK ] + " est inconnu")
 
-        return HttpResponse(status=_HTTP_SUCCESS, content=result.owner.getJson(), content_type=_HTTP_JSON)
+        return HttpResponse(status=_HTTP_SUCCESS, content=getUserInfo(result.owner, True), content_type=_HTTP_JSON)
 
     # Identification compte LETSBOOK
     if _USER_EMAIL in request.GET and _USER_PWD in request.GET:
@@ -111,7 +102,7 @@ def getUser(request):
         except Account.DoesNotExist:
             return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
 
-        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
+        return HttpResponse(status=_HTTP_SUCCESS, content=getUserAccount(result, True), content_type=_HTTP_JSON)
 
     # Identification Facebook
     if _USER_EMAIL in request.GET and _USER_FACEBOOK in request.GET:
@@ -123,7 +114,7 @@ def getUser(request):
         except Account.DoesNotExist:
             return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
 
-        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
+        return HttpResponse(status=_HTTP_SUCCESS, content=getUserAccount(result, True), content_type=_HTTP_JSON)
 
     # Identification Google
     if _USER_EMAIL in request.GET and _USER_GOOGLEPLUS in request.GET:
@@ -135,7 +126,7 @@ def getUser(request):
         except Account.DoesNotExist:
             return HttpResponse(status=_HTTP_ERROR, content="Le compte n'existe pas")
 
-        return HttpResponse(status=_HTTP_SUCCESS, content=result.getJson(), content_type=_HTTP_JSON)
+        return HttpResponse(status=_HTTP_SUCCESS, content=getUserAccount(result, True), content_type=_HTTP_JSON)
 
     return HttpResponse(status=_HTTP_ERROR, content="Identification/Recherche par ce(s) parametre(s) impossible")
 
@@ -149,3 +140,42 @@ def deleteUser(request):
 
     return HttpResponse(status=_HTTP_ERROR)
 
+# Json pour l'affichage d'un usager seulement
+def getUserInfo(user, jsonFormat):
+
+    if jsonFormat :
+        return json.dumps({
+            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
+            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
+            "email"         : str(user.email),
+            "phone"         : str(user.phone),
+            })
+
+    else:
+        return {
+            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
+            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
+            "email"         : str(user.email),
+            "phone"         : str(user.phone),
+            }
+
+# Json pour une connexion user
+def getUserAccount(user, jsonFormat):
+
+    if jsonFormat :
+        return json.dumps({
+            "idvalue"       : user.pk,
+            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
+            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
+            "email"         : str(user.email),
+            "phone"         : str(user.phone),
+            })
+
+    else:
+        return {
+            "idvalue"       : user.pk,
+            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
+            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
+            "email"         : str(user.email),
+            "phone"         : str(user.phone),
+            }
