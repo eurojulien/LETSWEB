@@ -6,6 +6,7 @@ urlpatterns = patterns('',
 
     url(r'school',       views.school,      name='school'),
     url(r'course',       views.course,      name='course'),
+    url(r'dept',         views.dept,        name='dept'),
     url(r'book',         views.book,        name='book'),
     url(r'user',         views.user,        name='user'),
 
