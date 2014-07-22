@@ -57,37 +57,6 @@ class Book (models.Model):
 
 
     # picture
-
-    # Format JSON
-    def getJson(self):
-
-        return json.dumps({
-                "idvalue"       : self.pk,
-                "title"         : str(self.title.encode('utf8', 'replace')),
-                "author"        : str(self.author.encode('utf8', 'replace')),
-                "edition"       : str(self.edition.encode('utf8', 'replace')),
-                "description"   : str(self.description.encode('utf8', 'replace')),
-                "ISBN"          : str(self.ISBN),
-                "state"         : str(self.howIsBook.encode('utf8', 'replace')),
-                "price"         : self.price,
-                "intent"        : str(self.intent.encode('utf8', 'replace'))
-        })
-
-    # Format String
-    def getStr(self):
-
-        return {
-                "idvalue"       : self.pk,
-                "title"         : str(self.title.encode('utf8', 'replace')),
-                "author"        : str(self.author.encode('utf8', 'replace')),
-                "edition"       : str(self.edition.encode('utf8', 'replace')),
-                "description"   : str(self.description.encode('utf8', 'replace')),
-                "ISBN"          : str(self.ISBN),
-                "state"         : str(self.howIsBook.encode('utf8', 'replace')),
-                "price"         : self.price,
-                "intent"        : str(self.intent.encode('utf8', 'replace'))
-        }
-
     def getPicture(self):
 
         return base64.b64decode("")
