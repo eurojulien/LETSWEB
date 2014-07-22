@@ -159,7 +159,7 @@ def getUserInfo(user, jsonFormat):
 def getUserAccount(user, jsonFormat):
 
     user = {
-            "ivalue"        : str(user.pk),
+            "idvalue"        : str(user.pk),
             "firstName"     : str(user.firstName.encode('utf8', 'replace')),
             "lastName"      : str(user.lastName.encode('utf8', 'replace')),
             "email"         : str(user.email),
