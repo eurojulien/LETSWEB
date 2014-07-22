@@ -3,7 +3,7 @@ from LETSBOOK.models import Account
 from LETSBOOK.models import Course
 from django.http import HttpResponse
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
+
 import json
 
 # Code de serveur
@@ -82,20 +82,10 @@ def putBook(request):
     except Exception as e:
         return HttpResponse(content=e.message, status=_HTTP_ERROR)
 
-    return HttpResponse(status=_HTTP_SUCCESS)
+    return HttpResponse(status=_HTTP_SUCCESS, content=getBookData(book, True))
 
 # Recherche d'un livre
 def getBook(request):
-
-    # Recherche avec clef primaire
-    if _BOOK_ID in request.GET:
-
-        try:
-            results = Book.objects.get(pk=request.GET[_BOOK_ID])
-        except Book.DoesNotExist:
-            return HttpResponse(content="Le livre " + request.GET[_BOOK_ID] + " n'existe pas", status=_HTTP_ERROR)
-
-        return HttpResponse(results.getJson(), content_type=_HTTP_JSON)
 
     # Parametres de recherche
     params  = Q()
@@ -109,7 +99,7 @@ def getBook(request):
         results = Book.objects.filter(params)
 
         for index in range(0, results.count()):
-            response[_BOOK_JSON].append(results[index].getStr())
+            response[_BOOK_JSON].append(getBookInfo(results[index], False))
 
         return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
 
@@ -148,7 +138,7 @@ def getBook(request):
     results = Book.objects.filter(params)
 
     for index in range(0, results.count()):
-        response["books"].append(results[index].getStr())
+        response["books"].append(getBookInfo(results[index], False))
 
     return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
 
@@ -167,3 +157,54 @@ def deleteBook(request):
         return HttpResponse(status=_HTTP_SUCCESS)
 
     return HttpResponse(status=_HTTP_ERROR)
+
+# Json pour l'affichage d'un livre seulement
+def getBookInfo(book, jsonFormat):
+
+    book = {"book" :
+                {
+                    "title"         : str(book.title.encode('utf8', 'replace')),
+                    "author"        : str(book.author.encode('utf8', 'replace')),
+                    "edition"       : str(book.edition.encode('utf8', 'replace')),
+                    "description"   : str(book.description.encode('utf8', 'replace')),
+                    "ISBN"          : str(book.ISBN),
+                    "state"         : str(book.howIsBook.encode('utf8', 'replace')),
+                    "price"         : book.price,
+                    "intent"        : str(book.intent.encode('utf8', 'replace')),
+                    "sigle"         : str(book.sigle.sigle.encode('utf8', 'replace')),
+                    "course"        : str(book.sigle.name.encode('utf8', 'replace')),
+                    "firstname"     : str(book.owner.firstName.encode('utf8', 'replace')),
+                    "lastname"      : str(book.owner.lastName.encode('utf8', 'replace')),
+                    "email"         : str(book.owner.email),
+                    "phone"         : str(book.owner.phone),
+                }
+            }
+
+    if jsonFormat :
+        return json.dumps(book)
+
+    return book
+
+# Json pour modification/suppression d'un livre
+def getBookData(book, jsonFormat):
+
+    book = {"book" :
+                {
+                    "idvalue"       : str(book.pk),
+                    "title"         : str(book.title.encode('utf8', 'replace')),
+                    "author"        : str(book.author.encode('utf8', 'replace')),
+                    "edition"       : str(book.edition.encode('utf8', 'replace')),
+                    "description"   : str(book.description.encode('utf8', 'replace')),
+                    "ISBN"          : str(book.ISBN),
+                    "state"         : str(book.howIsBook.encode('utf8', 'replace')),
+                    "price"         : book.price,
+                    "intent"        : str(book.intent.encode('utf8', 'replace')),
+                    "sigle"         : str(book.sigle.sigle.encode('utf8', 'replace')),
+                    "course"        : str(book.sigle.name.encode('utf8', 'replace')),
+                }
+            }
+
+    if jsonFormat :
+        return json.dumps(book)
+
+    return book
