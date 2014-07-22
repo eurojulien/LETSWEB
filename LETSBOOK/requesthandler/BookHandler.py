@@ -82,7 +82,7 @@ def putBook(request):
     except Exception as e:
         return HttpResponse(content=e.message, status=_HTTP_ERROR)
 
-    return HttpResponse(status=_HTTP_SUCCESS, content=getBookData(book, True))
+    return HttpResponse(status=_HTTP_SUCCESS, content=getBookData(book, True),content_type=_HTTP_JSON)
 
 # Recherche d'un livre
 def getBook(request):
@@ -101,7 +101,7 @@ def getBook(request):
         for index in range(0, results.count()):
             response[_BOOK_JSON].append(getBookInfo(results[index], False))
 
-        return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
+        return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(response), content_type=_HTTP_JSON)
 
     # Recherche avec critere precis
     if _BOOK_TITLE in request.GET:
@@ -134,13 +134,16 @@ def getBook(request):
     if _BOOK_SIGLE in request.GET:
         params = params & Q(sigle                   = Course.objects.get(pk=str(request.GET[_BOOK_SIGLE])))
 
+    if len(params) == 0:
+        return HttpResponse(status=_HTTP_ERROR, content="Aucun parametre precise")
+
     response = {'books' : []}
     results = Book.objects.filter(params)
 
     for index in range(0, results.count()):
         response["books"].append(getBookInfo(results[index], False))
 
-    return HttpResponse(json.dumps(response), content_type=_HTTP_JSON)
+    return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(response), content_type=_HTTP_JSON)
 
 # Suppression d'un livre
 def deleteBook(request):
