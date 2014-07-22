@@ -76,7 +76,7 @@ def putUser(request):
     except Exception as e:
         return HttpResponse(status=_HTTP_ERROR, content=e.message)
 
-    return HttpResponse(status=_HTTP_SUCCESS, content=getUserAccount(user, True))
+    return HttpResponse(status=_HTTP_SUCCESS, content=getUserAccount(user, True), content_type=_HTTP_JSON)
 
 # Recherche d'un compte usager
 def getUser(request):
