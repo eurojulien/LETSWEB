@@ -3,6 +3,7 @@ from LETSBOOK.models import Account
 from LETSBOOK.models import Course
 from django.http import HttpResponse
 from django.db.models import Q
+from collections import OrderedDict
 
 import json
 
@@ -164,7 +165,7 @@ def deleteBook(request):
 # Json pour l'affichage d'un livre seulement
 def getBookInfo(book, jsonFormat):
 
-    book = {"book" :
+    book = OrderedDict({"book" :
                 {
                     "title"         : str(book.title.encode('utf8', 'replace')),
                     "author"        : str(book.author.encode('utf8', 'replace')),
@@ -181,10 +182,10 @@ def getBookInfo(book, jsonFormat):
                     "email"         : str(book.owner.email),
                     "phone"         : str(book.owner.phone),
                 }
-            }
+            })
 
     if jsonFormat :
-        return json.dumps(book)
+        return json.dumps(book,sort_keys=False)
 
     return book
 

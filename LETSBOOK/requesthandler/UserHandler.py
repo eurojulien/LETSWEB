@@ -143,39 +143,30 @@ def deleteUser(request):
 # Json pour l'affichage d'un usager seulement
 def getUserInfo(user, jsonFormat):
 
-    if jsonFormat :
-        return json.dumps({
-            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
-            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
-            "email"         : str(user.email),
-            "phone"         : str(user.phone),
-            })
-
-    else:
-        return {
+    user = {
             "firstName"     : str(user.firstName.encode('utf8', 'replace')),
             "lastName"      : str(user.lastName.encode('utf8', 'replace')),
             "email"         : str(user.email),
             "phone"         : str(user.phone),
             }
+
+    if jsonFormat :
+        return json.dumps(user)
+
+    return user
 
 # Json pour une connexion user
 def getUserAccount(user, jsonFormat):
 
-    if jsonFormat :
-        return json.dumps({
-            "idvalue"       : user.pk,
-            "firstName"     : str(user.firstName.encode('utf8', 'replace')),
-            "lastName"      : str(user.lastName.encode('utf8', 'replace')),
-            "email"         : str(user.email),
-            "phone"         : str(user.phone),
-            })
-
-    else:
-        return {
-            "idvalue"       : user.pk,
+    user = {
+            "ivalue"        : str(user.pk),
             "firstName"     : str(user.firstName.encode('utf8', 'replace')),
             "lastName"      : str(user.lastName.encode('utf8', 'replace')),
             "email"         : str(user.email),
             "phone"         : str(user.phone),
             }
+
+    if jsonFormat :
+        return json.dumps(user)
+
+    return user
