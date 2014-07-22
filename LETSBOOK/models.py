@@ -257,16 +257,3 @@ class Account (models.Model):
                                     blank          = True,
                                     primary_key    = False,
                                     unique         = True)
-
-    def getJson(self):
-
-        return json.dumps({
-            "idvalue"       : self.pk,
-            "firstName"     : str(self.firstName.encode('utf8', 'replace')),
-            "lastName"      : str(self.lastName.encode('utf8', 'replace')),
-            "email"         : str(self.email),
-            "phone"         : str(self.phone),
-            "password"      : str(self.password),
-            "faceBookID"    : str(self.faceBookID),
-            "googlePlusID"  : str(self.googlePlusID)
-        })
