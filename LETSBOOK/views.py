@@ -1,6 +1,12 @@
+from LETSBOOK.requesthandler import AdminHandler
 from LETSBOOK.requesthandler import SchoolHandler
 from LETSBOOK.requesthandler import BookHandler
 from LETSBOOK.requesthandler import UserHandler
+
+# Code de serveur
+# http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+_HTTP_ERROR                     = 500
+from django.http import HttpResponse
 
 # Type de requetes
 _REQUEST_PUT    = 'PUT'
@@ -11,13 +17,36 @@ _REQUEST_DELETE = 'DELETE'
 def school(request):
 
     if request.method == _REQUEST_PUT:
-        return SchoolHandler.putSchool(request)
+        return AdminHandler.putSchool(request)
 
     if request.method == _REQUEST_GET:
-        return SchoolHandler.getSchool(request)
+        return AdminHandler.getSchool(request)
 
     if request.method == _REQUEST_DELETE:
-        return SchoolHandler.deleteSchool(request)
+        return AdminHandler.deleteSchool(request)
+
+    return HttpResponse(status=_HTTP_ERROR)
+
+def course(request):
+
+    if request.method == _REQUEST_GET:
+        return SchoolHandler.getCourse(request)
+
+    return HttpResponse(status=_HTTP_ERROR)
+
+def dept(request):
+
+    if request.method == _REQUEST_GET:
+        return SchoolHandler.getDepartement(request)
+
+    return HttpResponse(status=_HTTP_ERROR)
+
+def departement(request):
+
+    if request.method == _REQUEST_GET:
+        return SchoolHandler.getCourse(request)
+
+    return HttpResponse(status=_HTTP_ERROR)
 
 def book(request):
 
@@ -30,6 +59,8 @@ def book(request):
     if request.method == _REQUEST_DELETE:
         return BookHandler.deleteBook(request)
 
+    return HttpResponse(status=_HTTP_ERROR)
+
 def user(request):
 
     if request.method == _REQUEST_PUT:
@@ -40,3 +71,5 @@ def user(request):
 
     if request.method == _REQUEST_DELETE:
         return UserHandler.deleteUser(request)
+
+    return HttpResponse(status=_HTTP_ERROR)
