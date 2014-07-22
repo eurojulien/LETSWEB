@@ -10,7 +10,7 @@ import json
 _COURSE_DEPT    = "iddept"
 _COURSE_SCHOOL  = "idschool"
 _DEPT_COURSE    = "idcourse"
-_DEPT_SCHOOL    = "iddept"
+_DEPT_SCHOOL    = "idschool"
 
 # Code de serveur
 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -20,7 +20,6 @@ _HTTP_JSON                      = "application/json"
 
 def getCourse(request):
 
-    params  = Q()
     courses = None
 
     # Tous les cours d'un departement
@@ -54,6 +53,7 @@ def getCourse(request):
 def getCourseInfo(course, jsonFormat):
 
     cours = { "course"  : {
+        "idvalue"       : str(course.pk),
         "sigle"         : str(course.sigle.encode('utf8', 'replace')),
         "name"          : str(course.name.encode('utf8', 'replace')),
         "description"   : str(course.description.encode('utf8', 'replace')),
@@ -69,7 +69,52 @@ def getCourseInfo(course, jsonFormat):
 
 
 
-#def getDepartement(request):
+def getDepartement(request):
+
+    courses = None
+
+    # Departements d'une universite
+    if _DEPT_SCHOOL in request.GET:
+
+        try:
+            school = Establishment.objects.get(pk=request.GET[_DEPT_SCHOOL])
+        except Establishment.DoesNotExist:
+            return HttpResponse(status=_HTTP_ERROR, content="L'etablissement " + request.GET[_DEPT_SCHOOL] + " n'existe pas")
+
+        results = Department.objects.filter(etablishment=school)
+
+        depts = {"depts" : []}
+
+        for index in range(0, results.count()):
+            depts["depts"].append(getDeptInfo(results[index], False))
+
+        return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(depts), content_type=_HTTP_JSON)
+
+    # Tous les departement
+    results = Department.objects.all()
+
+    depts = {"depts" : []}
+
+    for index in range(0, results.count()):
+        depts["depts"].append(getDeptInfo(results[index], False))
+
+    return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(depts), content_type=_HTTP_JSON)
+
+
+def getDeptInfo(dept, jsonFormat):
+
+    depts = { "dept" : {
+                "idvalue"       : str(dept.pk),
+                "name"          : str(dept.name.encode('utf8', 'replace')),
+                "description"   : str(dept.description.encode('utf8', 'replace')),
+                    }
+            }
+
+    if jsonFormat :
+        return json.dumps(depts)
+
+    return depts
+
 
 #def getUniversity(request):
 
