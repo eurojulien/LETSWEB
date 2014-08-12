@@ -4,8 +4,6 @@ from LETSBOOK import views
 
 urlpatterns = patterns('',
 
-    url(r'school',       views.school,      name='school'),
-    url(r'book',         views.book,        name='book'),
-    url(r'user',         views.user,        name='user'),
-
+    # Index du site
+    url(r'^$',          views.index),
 )
