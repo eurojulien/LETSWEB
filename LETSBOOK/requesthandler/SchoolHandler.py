@@ -7,10 +7,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 import json
 
-_COURSE_DEPT    = "iddept"
-_COURSE_SCHOOL  = "idschool"
-_DEPT_COURSE    = "idcourse"
-_DEPT_SCHOOL    = "idschool"
+_SCHOOL         = "idschool"
 
 # Code de serveur
 # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -18,96 +15,58 @@ _HTTP_SUCCESS                   = 200
 _HTTP_ERROR                     = 500
 _HTTP_JSON                      = "application/json"
 
-def getCourse(request):
+def getUniversity(request):
 
-    courses = None
-
-    # Tous les cours d'un departement
-    if _COURSE_DEPT in request.GET:
+    # Nom universite
+    if _SCHOOL in request.GET:
 
         try:
-            dept    = Department.objects.get(pk=request.GET[_COURSE_DEPT])
-        except Department.DoesNotExist:
-            return HttpResponse(status=_HTTP_ERROR, content="Le departement " + request.GET[_COURSE_DEPT] + " n'existe pas")
-
-        results = Course.objects.filter(department=dept)
-
-        courses = {"courses" : []}
-
-        for index in range(0, results.count()):
-            courses["courses"].append(getCourseInfo(results[index], False))
-
-        return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(courses), content_type=_HTTP_JSON)
-
-
-    # Tous les cours
-    results = Course.objects.all()
-
-    courses = {"courses" : []}
-
-    for index in range(0, results.count()):
-        courses["courses"].append(getCourseInfo(results[index], False))
-
-    return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(courses), content_type=_HTTP_JSON)
-
-def getCourseInfo(course, jsonFormat):
-
-    cours = { "course"  : {
-        "idvalue"       : str(course.pk),
-        "sigle"         : str(course.sigle.encode('utf8', 'replace')),
-        "name"          : str(course.name.encode('utf8', 'replace')),
-        "description"   : str(course.description.encode('utf8', 'replace')),
-        "deptname"      : str(course.department.name.encode('utf8', 'replace')),
-        "deptdesc"      : str(course.department.description.encode('utf8', 'replace')),
-        "estaname"      : str(course.department.etablishment.name.encode('utf8', 'replace'))
-    }}
-
-    if jsonFormat :
-        return json.dumps(cours)
-
-    return cours
-
-
-
-def getDepartement(request):
-
-    courses = None
-
-    # Departements d'une universite
-    if _DEPT_SCHOOL in request.GET:
-
-        try:
-            school = Establishment.objects.get(pk=request.GET[_DEPT_SCHOOL])
+            school = Establishment.objects.get(pk=str(request.GET[_SCHOOL]))
         except Establishment.DoesNotExist:
-            return HttpResponse(status=_HTTP_ERROR, content="L'etablissement " + request.GET[_DEPT_SCHOOL] + " n'existe pas")
+            return HttpResponse(status=_HTTP_ERROR, content="L'ecole est inconnue")
 
-        results = Department.objects.filter(etablishment=school)
+        response    = getSchoolInfo(school, False)
 
-        depts = {"depts" : []}
+        depts       = Department.objects.filter(etablishment=school)
 
-        for index in range(0, results.count()):
-            depts["depts"].append(getDeptInfo(results[index], False))
+        for dept in range(0, depts.count()):
+            response["depts"].append(getDeptInfo(depts[dept], False))
 
-        return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(depts), content_type=_HTTP_JSON)
+            courses = Course.objects.filter(department=depts[dept])
 
-    # Tous les departement
-    results = Department.objects.all()
+            for course in range(0, courses.count()):
+                response["depts"][dept]["courses"].append(getCourseInfo(courses[course], False))
 
-    depts = {"depts" : []}
 
-    for index in range(0, results.count()):
-        depts["depts"].append(getDeptInfo(results[index], False))
+        return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(response), content_type=_HTTP_JSON)
 
-    return HttpResponse(status=_HTTP_SUCCESS, content=json.dumps(depts), content_type=_HTTP_JSON)
+    return HttpResponse(status=_HTTP_ERROR)
 
+def getSchoolInfo(school, jsonFormat):
+
+    school = {
+                  "idvalue" : str(school.pk),
+                  "name"    : str(school.name.encode('utf8', 'replace')),
+                  "street"  : str(school.street.encode('utf8', 'replace')),
+                  "city"    : str(school.city.encode('utf8', 'replace')),
+                  "zipcode" : str(school.zipCode.encode('utf8', 'replace')),
+                  "type"    : str(school.type.encode('utf8', 'replace')),
+                  "website" : str(school.webSite.encode('utf8', 'replace')),
+                  "depts"   : [],
+            }
+
+    if jsonFormat:
+        return json.dumps(school)
+
+    return school
 
 def getDeptInfo(dept, jsonFormat):
 
-    depts = { "dept" : {
+    depts = {
                 "idvalue"       : str(dept.pk),
                 "name"          : str(dept.name.encode('utf8', 'replace')),
                 "description"   : str(dept.description.encode('utf8', 'replace')),
-                    }
+                "courses"       : [],
             }
 
     if jsonFormat :
@@ -115,7 +74,16 @@ def getDeptInfo(dept, jsonFormat):
 
     return depts
 
+def getCourseInfo(course, jsonFormat):
 
-#def getUniversity(request):
+    cours = {
+                "idvalue"       : str(course.pk),
+                "sigle"         : str(course.sigle.encode('utf8', 'replace')),
+                "name"          : str(course.name.encode('utf8', 'replace')),
+                "description"   : str(course.description.encode('utf8', 'replace')),
+           }
 
+    if jsonFormat :
+        return json.dumps(cours)
 
+    return cours
