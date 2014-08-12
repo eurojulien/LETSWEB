@@ -1,54 +1,49 @@
-from LETSBOOK.requesthandler import AdminHandler
-from LETSBOOK.requesthandler import SchoolHandler
-from LETSBOOK.requesthandler import BookHandler
-from LETSBOOK.requesthandler import UserHandler
 
-# Code de serveur
-# http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-_HTTP_ERROR                     = 500
-from django.http import HttpResponse
 
-# Type de requetes
-_REQUEST_PUT    = 'PUT'
-_REQUEST_GET    = 'GET'
-_REQUEST_DELETE = 'DELETE'
-
-# Create your views here.
-def school(request):
-
-    if request.method == _REQUEST_PUT:
-        return AdminHandler.putSchool(request)
-
-    if request.method == _REQUEST_GET:
-        return SchoolHandler.getUniversity(request)
-
-    if request.method == _REQUEST_DELETE:
-        return AdminHandler.deleteSchool(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
-
-def book(request):
-
-    if request.method == _REQUEST_PUT:
-        return BookHandler.putBook(request)
-
-    if request.method == _REQUEST_GET:
-        return BookHandler.getBook(request)
-
-    if request.method == _REQUEST_DELETE:
-        return BookHandler.deleteBook(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
-
-def user(request):
-
-    if request.method == _REQUEST_PUT:
-        return UserHandler.putUser(request)
-
-    if request.method == _REQUEST_GET:
-        return UserHandler.getUser(request)
-
-    if request.method == _REQUEST_DELETE:
-        return UserHandler.deleteUser(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
+# Some standard Django stuff
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.template import Context, loader
+ 
+# list of mobile User Agents
+mobile_uas = [
+	'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',
+	'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',
+	'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',
+	'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',
+	'newt','noki','oper','palm','pana','pant','phil','play','port','prox',
+	'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',
+	'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',
+	'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
+	'wapr','webc','winw','winw','xda','xda-'
+	]
+ 
+mobile_ua_hints = [ 'SymbianOS', 'Opera Mini', 'iPhone' ]
+ 
+ 
+def mobileBrowser(request):
+    ''' Super simple device detection, returns True for mobile devices '''
+ 
+    mobile_browser = False
+    ua = request.META['HTTP_USER_AGENT'].lower()[0:4]
+ 
+    if (ua in mobile_uas):
+        mobile_browser = True
+    else:
+        for hint in mobile_ua_hints:
+            if request.META['HTTP_USER_AGENT'].find(hint) > 0:
+                mobile_browser = True
+ 
+    return mobile_browser
+ 
+ 
+def index(request):
+    '''Render the index page'''
+ 
+    if mobileBrowser(request):
+        t = loader.get_template('m_index.html')
+    else:
+        t = loader.get_template('index.html')
+ 
+    c = Context( { }) # normally your page data would go here
+ 
+    return HttpResponse(t.render(c))
