@@ -20,31 +20,10 @@ def school(request):
         return AdminHandler.putSchool(request)
 
     if request.method == _REQUEST_GET:
-        return AdminHandler.getSchool(request)
+        return SchoolHandler.getUniversity(request)
 
     if request.method == _REQUEST_DELETE:
         return AdminHandler.deleteSchool(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
-
-def course(request):
-
-    if request.method == _REQUEST_GET:
-        return SchoolHandler.getCourse(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
-
-def dept(request):
-
-    if request.method == _REQUEST_GET:
-        return SchoolHandler.getDepartement(request)
-
-    return HttpResponse(status=_HTTP_ERROR)
-
-def departement(request):
-
-    if request.method == _REQUEST_GET:
-        return SchoolHandler.getCourse(request)
 
     return HttpResponse(status=_HTTP_ERROR)
 
