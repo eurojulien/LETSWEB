@@ -22,7 +22,6 @@ _USER_PHONE          = "phone"      # Telephone usager
 _USER_PWD            = "password"   # Mot de passe usager
 _USER_FACEBOOK       = "facebook"   # Compte faceBook usager
 _USER_GOOGLEPLUS     = "googleplus" # Compte Google Usager
-_USER_BOOK           = "idbook"     # Clef primaire d'un livre
 
 # Ajout ou modification d'un compte etudiant
 def putUser(request):
@@ -82,15 +81,6 @@ def putUser(request):
 def getUser(request):
 
     params  = Q()
-
-    # Proprietaire d'un livre
-    if _USER_BOOK in request.GET:
-        try:
-            result = Book.objects.get(pk=request.GET[_USER_BOOK])
-        except Book.DoesNotExist:
-            return HttpResponse(status=_HTTP_ERROR, content= "Le livre " + request.GET[_USER_BOOK ] + " est inconnu")
-
-        return HttpResponse(status=_HTTP_SUCCESS, content=getUserInfo(result.owner, True), content_type=_HTTP_JSON)
 
     # Identification compte LETSBOOK
     if _USER_EMAIL in request.GET and _USER_PWD in request.GET:
@@ -159,7 +149,7 @@ def getUserInfo(user, jsonFormat):
 def getUserAccount(user, jsonFormat):
 
     user = {
-            "idvalue"        : str(user.pk),
+            "idvalue"       : str(user.pk),
             "firstName"     : str(user.firstName.encode('utf8', 'replace')),
             "lastName"      : str(user.lastName.encode('utf8', 'replace')),
             "email"         : str(user.email),
