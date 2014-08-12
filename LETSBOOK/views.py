@@ -16,8 +16,9 @@ mobile_uas = [
 	'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',
 	'wapr','webc','winw','winw','xda','xda-'
 	]
- 
-mobile_ua_hints = [ 'SymbianOS', 'Opera Mini', 'iPhone' ]
+
+# Liste des plate forme mobile ayant acces a un browser
+mobile_ua_hints = [ 'SymbianOS', 'Opera Mini', 'iPhone', 'Android' ]
  
  
 def mobileBrowser(request):
@@ -32,17 +33,20 @@ def mobileBrowser(request):
         for hint in mobile_ua_hints:
             if request.META['HTTP_USER_AGENT'].find(hint) > 0:
                 mobile_browser = True
+
+            # Condition de sortie (Plus rapide)
+            if mobile_browser :
+                break
  
     return mobile_browser
- 
- 
+
 def index(request):
     '''Render the index page'''
  
     if mobileBrowser(request):
-        t = loader.get_template('m_index.html')
+        t = loader.get_template('mobile/index.html')
     else:
-        t = loader.get_template('index.html')
+        t = loader.get_template('desktop/index.html')
  
     c = Context( { }) # normally your page data would go here
  
