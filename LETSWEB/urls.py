@@ -4,10 +4,10 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'LETSWEB.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
 
+    # Section administrative
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^letsbook', include('LETSBOOK.urls')),
+
+    # LETSBOOK
+    url(r'^$', include('LETSBOOK.urls')),
 )
