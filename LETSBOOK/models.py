@@ -20,11 +20,11 @@ class Book (models.Model):
                                     )
 
     title       = models.CharField(verbose_name   = "Titre du livre",
-                                   max_length     = 50,
+                                   max_length     = 100, #50
                                    primary_key    = False)
 
-    author      = models.CharField(verbose_name   = "Auteur du livre",
-                                   max_length     = 50,
+    author      = models.CharField(verbose_name   = "Auteur(s) du livre",
+                                   max_length     = 100, # 50
                                    primary_key    = False)
 
     edition     = models.CharField(verbose_name   = "Edition du livre",
@@ -36,15 +36,15 @@ class Book (models.Model):
                                     primary_key     = False)
 
     howIsBook   = models.CharField(verbose_name   = "Etat du livre",
-                                   max_length     = 100,
+                                   max_length     = 50, # 100
                                    primary_key    = False)
 
     intent      = models.CharField(verbose_name   = "Intention du vendeur",
-                                   max_length     = 30,
+                                   max_length     = 50, # 30
                                    primary_key    = False)
 
     description = models.CharField(verbose_name   = "Description du livre",
-                                   max_length     = 100,
+                                   max_length     = 1000, # 100
                                    blank          = True,
                                    default        = "",
                                    primary_key    = False)
@@ -55,18 +55,17 @@ class Book (models.Model):
                                    default        = "",
                                    primary_key    = False)
 
-
-    # picture
-    def getPicture(self):
-
-        return base64.b64decode("")
+    # Suggestion de champs de livre
+    # langue du livre       ***
+    # maison d'edition      *
 
 class Course (models.Model):
 
     def __str__(self):
         return self.sigle + "( " + self.name.encode('utf8', 'replace') + " )"
 
-    department  = models.ForeignKey('Department')
+    department  = models.ForeignKey('Department',
+                                    verbose_name  = 'Departement du cours',)
 
     name        = models.CharField(verbose_name   = "Nom du cours",
                                    max_length     = 100,
@@ -74,31 +73,26 @@ class Course (models.Model):
                                    primary_key    = False)
 
     sigle      = models.CharField(verbose_name   = "Sigle du cours",
-                                   max_length     = 100,
+                                   max_length     = 50, # 100
                                    null           = False,
                                    primary_key    = False,
                                    unique         = True)
 
     description = models.CharField(verbose_name   = "Description du cours",
-                                   max_length     = 100,
+                                   max_length     = 1000, # 100
+                                   blank          = True, # false
+                                   default        = "",
                                    null           = False,
                                    primary_key    = False)
-
-    def getJson(self):
-
-        return json.dumps({
-                "idvalue"       : self.pk,
-                "name"          : str(self.name.encode('utf8', 'replace')),
-                "sigle"         : str(self.sigle),
-                "description"   : str(self.description.encode('utf8', 'replace'))
-            })
 
 class Department (models.Model):
 
     def __str__(self):
         return self.name
 
-    etablishment= models.ForeignKey('Establishment')
+    establishment = models.ForeignKey('Establishment',
+                                      verbose_name = "Etablissement scolaire",
+                                      )
 
     name        = models.CharField(verbose_name   = "Nom du Departement",
                                    max_length     = 100,
@@ -108,15 +102,10 @@ class Department (models.Model):
 
     description = models.CharField(verbose_name   = "Description du departement",
                                    max_length     = 100,
+                                   blank          = True, # false
+                                   default        = "",
                                    null           = False,
                                    primary_key    = False)
-    def getJson(self):
-
-        return json.dump({
-                "idvalue"       : self.pk,
-                "name"          : str(self.name.encode('utf8', 'replace')),
-                "description"   : str(self.description.encode('utf8', 'replace'))
-            })
 
 # Etablissement scolaire
 class Establishment (models.Model):
@@ -154,40 +143,16 @@ class Establishment (models.Model):
                                    null           = False,
                                    primary_key    = False)
 
-    def getJson(self):
-
-        return json.dumps({
-            "idvalue"       : self.pk,
-            "name"          : str(self.name.encode('utf8', 'replace')),
-            "street"        : str(self.street.encode('utf8', 'replace')),
-            "city"          : str(self.city.encode('utf8', 'replace')),
-            "zipCode"       : str(self.zipCode),
-            "type"          : str(self.type.encode('utf8', 'replace')),
-            "webSite"       : str(self.webSite)
-        })
-
-    def getStr(self):
-
-        return {
-            "idvalue"       : self.pk,
-            "name"          : str(self.name.encode('utf8', 'replace')),
-            "street"        : str(self.street.encode('utf8', 'replace')),
-            "city"          : str(self.city.encode('utf8', 'replace')),
-            "zipCode"       : str(self.zipCode),
-            "type"          : str(self.type.encode('utf8', 'replace')),
-            "webSite"       : str(self.webSite)
-        }
-
 class Account (models.Model):
 
     def __str__(self):
         return self.lastName.encode('utf8', 'replace') + ", " + self.firstName.encode('utf8', 'replace') + "( " + self.email + ") "
 
-    department  = models.ForeignKey('Department',
-                                    verbose_name  = 'Departement Scolaire',
-                                    blank         = True,
-                                    null          = True,
-                                    )
+    establishment = models.ForeignKey('Establishment',                      # Departement
+                                      verbose_name  = "Etablissement scolaire",
+                                      blank         = True,
+                                      default       = None,
+                                      )
 
     firstName   = models.CharField(verbose_name   = "Prenom de l'utilisateur",
                                    max_length     = 100,
@@ -200,7 +165,8 @@ class Account (models.Model):
     email       = models.CharField(verbose_name   = "Email de l'utilisateur",
                                    max_length     = 100,
                                    null           = False,
-                                   unique         = True)
+                                   unique         = True,
+                                  )
 
     phone       = models.CharField(verbose_name   = "Telephone de l'utilisateur",
                                    max_length     = 100,
@@ -209,20 +175,21 @@ class Account (models.Model):
 
     password    = models.CharField(verbose_name   = "Mot de passe du compte",
                                    max_length     = 100,
-                                   null           = True,
+                                   null           = False,
                                    blank          = True,
+                                   default        = "",
                                    primary_key    = False)
 
     faceBookID  = models.CharField(verbose_name   = "Identification FaceBook",
                                    max_length     = 100,
-                                   null           = True,
+                                   null           = False,
                                    blank          = True,
-                                   primary_key    = False,
-                                   unique         = True)
+                                   default        = "",
+                                   primary_key    = False)
 
     googlePlusID = models.CharField(verbose_name   = "Identification Google Plus",
                                     max_length     = 100,
-                                    null           = True,
+                                    null           = False,
                                     blank          = True,
-                                    primary_key    = False,
-                                    unique         = True)
+                                    default        = "",
+                                    primary_key    = False)
