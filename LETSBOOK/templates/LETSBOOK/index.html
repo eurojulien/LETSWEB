@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 
+'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
+
+  <html xmlns='http://www.w3.org/1999/xhtml'>
+    {% load staticfiles %}
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'LETSBOOK/jquery.tabify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'LETSBOOK/script.js' %}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'LETSBOOK/desktop.css' %}">
+    <!-- ICONE POUR UN LIEN SUR UNE PLATE FORME MOBILE (LOOK & FEEL D'UN BOUTON D'APPS -->
+    <!-- link rel="mobile-touch-icon" href="path_to_icon.png" /-->
+
+    <!-- CHARGE UN CSS selon plateforme mobile ou desktop -->
+    <!-- meta name="Desktop    (min-width: 700px)" href="desktop.css" rel="stylesheet" type="text/css" / -->
+    <!-- meta name="Mobile     (max-width: 700px)" href="mobile.css" rel="stylesheet" type="text/css" /  -->
+
+    <head>
+        <title> LAZYBOOK </title>
+    </head>
+    <body>
+
+      <ul id="tabs">
+        <li class="active"> <a href="#search">  Recherche   </a></li>
+        <li>                <a href="#addBook"> Ajouter     </a></li>
+        <li>                <a href="#manage">  Gerer       </a></li>
+      </ul>
+
+      <div class="content" id="search">
+            Recherche de livre
+      </div>
+
+      <div class="content" id="addBook">
+            Ajout de livres
+      </div>
+
+      <div class="content" id="manage">
+            Gestion de livres
+      </div>
+
+    </body>
+  </html>
