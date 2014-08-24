@@ -24,7 +24,8 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['letsweb.eurojulien.webfactional.com']
+ALLOWED_HOSTS = ['letsweb.eurojulien.webfactional.com',
+                 'lazybook.eurojulien.webfacctional.com']
 
 
 # Application definition
@@ -56,13 +57,14 @@ WSGI_APPLICATION\
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'LetsbookBD'),
     }
 }
+'''
 
 # POSTGRESQL
 '''
@@ -94,5 +96,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/home/eurojulien/webapps/lazybook/lazystatic/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
