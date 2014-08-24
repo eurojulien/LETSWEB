@@ -8,16 +8,19 @@
     <script type="text/javascript" src="{% static 'LETSBOOK/jquery.tabify.js' %}"></script>
     <script type="text/javascript" src="{% static 'LETSBOOK/script.js' %}"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'LETSBOOK/desktop.css' %}">
+    <!--link rel="stylesheet" type="text/css" href="{% static 'LETSBOOK/desktop.css' %}"__>
     <!-- ICONE POUR UN LIEN SUR UNE PLATE FORME MOBILE (LOOK & FEEL D'UN BOUTON D'APPS -->
     <!-- link rel="mobile-touch-icon" href="path_to_icon.png" /-->
 
-    <!-- CHARGE UN CSS selon plateforme mobile ou desktop -->
-    <!-- meta name="Desktop    (min-width: 700px)" href="desktop.css" rel="stylesheet" type="text/css" / -->
-    <!-- meta name="Mobile     (max-width: 700px)" href="mobile.css" rel="stylesheet" type="text/css" /  -->
 
     <head>
         <title> LAZYBOOK </title>
+
+        <!-- CHARGE UN CSS selon plateforme mobile ou desktop -->
+        <meta name="LAZYBOOK" content="Application d'echange de livres entres etudiants"/>
+        <link media="only screen and (max-width: 700px)" href="{% static 'LETSBOOK/mobile.css' %}" rel="stylesheet" type="text/css" />
+        <link media="only screen and (min-width: 700px)" href="{% static 'LETSBOOK/desktop.css' %}" rel="stylesheet" type="text/css" />
+
     </head>
     <body>
 
