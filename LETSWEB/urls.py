@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
-
+from django.conf.urls.static import static
 from django.contrib import admin
+import settings
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -10,4 +12,4 @@ urlpatterns = patterns('',
 
     # LETSBOOK
     url(r'^$', include('LETSBOOK.urls')),
-)
+) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
