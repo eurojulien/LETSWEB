@@ -3,6 +3,7 @@
 # Some standard Django stuff
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import Context, loader
+from LETSWEB import settings
  
 # list of mobile User Agents
 mobile_uas = [
@@ -42,11 +43,12 @@ def mobileBrowser(request):
 
 def index(request):
     '''Render the index page'''
- 
+
+    print settings.STATICFILES_DIRS
     if mobileBrowser(request):
-        t = loader.get_template('mobile/index.html')
+        t = loader.get_template('LETSBOOK/index.html')
     else:
-        t = loader.get_template('desktop/index.html')
+        t = loader.get_template('LETSBOOK/index.html')
  
     c = Context( { }) # normally your page data would go here
  
