@@ -3,25 +3,51 @@
 /* # pour les id */
 /* . pour les class */
 
-body {
-    width:100$;
-    font: 0.8em Arial, sans-serif;
+html {
+
+    padding     :   0px;
+    margin      :   0px;
+    width       :   100%;
 }
 
-#tabs { padding: 0; }
-#tabs li { display: inline; }
+body {
+    padding     :   0px;
+    margin      :   0px;
+    width       :   100%;
+    font        :   0.8em Arial, sans-serif;
+    display     :   block;
+
+    /* Mozilla Firefox rotation 90
+    -moz-transform: rotate(-90deg); */
+
+    /* WebKit rotation 90
+    /* -webkit-transform: rotate(-90deg); */
+
+    /* Inernet Explorer rotation 90
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
+}
+
+#tabs {
+    padding     :   0;
+    margin      :   inherit;
+    }
+
+#tabs li {
+    display     :   inline;
+    }
+
 #tabs li a {
+    padding     :   10px 0px 10px 0px;
+    width       :   33.3333333%;
+
     background: #ccf;
-    padding: 10px;
     float:left;
-    border-right: 1px solid #ccf;
     border-bottom: none;
     text-decoration: none;
     text-align:center;
     color: #000;
     font-weight: bold;
-    width:30%;
-    height:100%;
+
     }
 
 #tabs li.active a {
@@ -35,6 +61,6 @@ body {
     border-top: none;
     border-left: none;
     background: #eef;
-    padding: 10px 20px 20px;
+    padding: 10px;
     width: 100%;
     }
