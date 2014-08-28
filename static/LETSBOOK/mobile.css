@@ -13,7 +13,6 @@ html {
 body {
     padding     :   0px;
     margin      :   0px;
-    width       :   100%;
     font        :   0.8em Arial, sans-serif;
     display     :   block;
 
@@ -38,7 +37,7 @@ body {
 
 #tabs li a {
     padding     :   10px 0px 10px 0px;
-    width       :   33.3333333%;
+    width       :   45%;
 
     background: #ccf;
     float:left;
@@ -61,6 +60,14 @@ body {
     border-top: none;
     border-left: none;
     background: #eef;
-    padding: 10px;
+    padding: 10px 10px 10px 10px;
     width: 100%;
     }
+
+#parameters{
+    padding: 3px;
+}
+
+#addDescription{
+
+}
