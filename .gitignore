@@ -4,3 +4,8 @@
 *.sqlite3
 staticfiles
 LetsbookBD
+venv
+*.pyc
+staticfiles
+.env
+
