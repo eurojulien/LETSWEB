@@ -9,9 +9,8 @@
     <script type="text/javascript" src="{% static 'LETSBOOK/script.js' %}"></script>
 
     <!--link rel="stylesheet" type="text/css" href="{% static 'LETSBOOK/desktop.css' %}"__>
-    <!-- ICONE POUR UN LIEN SUR UNE PLATE FORME MOBILE (LOOK & FEEL D'UN BOUTON D'APPS -->
+    <!-- ICONE POUR UN LIEN SUR UNE PLATE FORME MOBILE (LOOK & FEEL D'UN BOUTON D'APPS) -->
     <!-- link rel="mobile-touch-icon" href="path_to_icon.png" /-->
-
 
     <head>
         <title> LAZYBOOK </title>
@@ -25,22 +24,21 @@
     <body>
 
       <ul id="tabs">
-        <li class="active"> <a href="#search">  Recherche   </a></li>
-        <li>                <a href="#addBook"> Ajouter     </a></li>
-        <li>                <a href="#manage">  Gerer       </a></li>
+        <li class="active"> <a href="#search">  Acheter/Vendre   </a></li>
+        <li>                <a href="#manage"> Mes Livres     </a></li>
+        <button type="button" id="parameters">+</button>
       </ul>
 
       <div class="content" id="search">
             Recherche de livre
       </div>
 
-      <div class="content" id="addBook">
-            Ajout de livres
-      </div>
-
       <div class="content" id="manage">
             Gestion de livres
       </div>
 
+      <div class="content" id="addDescription">
+
+      </div>
     </body>
   </html>
